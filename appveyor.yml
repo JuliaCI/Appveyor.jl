@@ -26,15 +26,14 @@ notifications:
     on_build_status_changed: false
 
 install:
+  - ps: Start-Sleep -s 5 # give GitHub time to update
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/simonbyrne/Appveyor.jl/master/bin/install.ps1'))
 
 build_script:
-# Need to convert from shallow to complete for Pkg.clone to work
-  - IF EXIST .git\shallow (git fetch --unshallow)
-  - julia -e "Pkg.clone(pwd(), \"Appveyor\"); Pkg.build(\"Appveyor\")"
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/simonbyrne/Appveyor.jl/master/bin/build.ps1'))
 
 test_script:
-  - julia -e "Pkg.test(\"Appveyor\")"
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/simonbyrne/Appveyor.jl/master/bin/test.ps1'))
 
 # on_finish:
 #   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
