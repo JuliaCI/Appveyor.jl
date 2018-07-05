@@ -43,5 +43,19 @@ Start-Process -FilePath "C:\projects\julia-binary.exe" -ArgumentList "/S /D=C:\p
 # Append to PATH
 $env:PATH += ";C:\projects\julia\bin"
 
-julia -e 'versioninfo()'
+if (($julia_version -ge [Version]"0.7") -and (Test-Path "Project.toml")) {
+    $env:JULIA_PROJECT = ".@" # TODO: change this to --project="@."
+    $env:JL_BUILD_SCRIPT = "using Pkg; Pkg.build()"
+    $env:JL_TEST_SCRIPT = "using Pkg; Pkg.test()"
+} else {
+    # Set projectname
+    $projectname = $env:APPVEYOR_PROJECT_NAME -replace '\.jl$',''
+    $env:JL_BUILD_SCRIPT = "Pkg.clone(pwd(), \`"$projectname\`"); Pkg.build(\`"$projectname\`")"
+    $env:JL_TEST_SCRIPT = "Pkg.test(\`"$projectname\`")"
+}
 
+if ($julia_version -ge [Version]"0.7") {
+    julia -e 'using InteractiveUtils; versioninfo()'
+} else {
+    julia -e 'versioninfo()'
+}

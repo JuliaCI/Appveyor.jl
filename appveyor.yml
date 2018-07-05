@@ -29,10 +29,9 @@ install:
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/simonbyrne/Appveyor.jl/master/bin/install.ps1'))
 
 build_script:
-  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/simonbyrne/Appveyor.jl/master/bin/build.ps1'))
+  - echo "%JL_BUILD_SCRIPT%"
+  - julia -e "%JL_BUILD_SCRIPT%"
 
 test_script:
-  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/simonbyrne/Appveyor.jl/master/bin/test.ps1'))
-
-# on_finish:
-#   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+  - echo "%JL_TEST_SCRIPT%"
+  - julia -e "%JL_TEST_SCRIPT%"
