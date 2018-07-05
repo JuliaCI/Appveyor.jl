@@ -26,7 +26,6 @@ notifications:
     on_build_status_changed: false
 
 install:
-  - ps: Start-Sleep -s 5 # give GitHub time to update
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/simonbyrne/Appveyor.jl/master/bin/install.ps1'))
 
 build_script:
