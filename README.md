@@ -1,7 +1,5 @@
-# Appveyor
+# Appveyor.jl
 
-[![Build Status](https://travis-ci.org/simonbyrne/Appveyor.jl.svg?branch=master)](https://travis-ci.org/simonbyrne/Appveyor.jl)
+[![Build status](https://ci.appveyor.com/api/projects/status/rbca6b6qclxqdhwx/branch/master?svg=true)](https://ci.appveyor.com/project/simonbyrne/appveyor-jl)
 
-[![Coverage Status](https://coveralls.io/repos/simonbyrne/Appveyor.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/simonbyrne/Appveyor.jl?branch=master)
-
-[![codecov.io](http://codecov.io/github/simonbyrne/Appveyor.jl/coverage.svg?branch=master)](http://codecov.io/github/simonbyrne/Appveyor.jl?branch=master)
+This contains a "universal" Appveyor script for Julia repositories, making it easier to set up matrix builds and keep URLs up-to-date.
