@@ -26,7 +26,13 @@ notifications:
     on_build_status_changed: false
 
 install:
-  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/JuliaCI/Appveyor.jl/master/bin/install.ps1'))
+  - ps: |
+      if (Test-Path env:APPVEYOR_PULL_REQUEST_HEAD_COMMIT) {
+          $ref = $env:APPVEYOR_PULL_REQUEST_HEAD_COMMIT
+      } else {
+          $ref = "master"
+      }          
+      iex ((new-object net.webclient).DownloadString("https://raw.githubusercontent.com/JuliaCI/Appveyor.jl/$ref/bin/install.ps1"))
 
 build_script:
   - echo "%JL_BUILD_SCRIPT%"
@@ -35,3 +41,6 @@ build_script:
 test_script:
   - echo "%JL_TEST_SCRIPT%"
   - julia -e "%JL_TEST_SCRIPT%"
+
+cache:
+  - C:\julia -> appveyor.yml
