@@ -41,14 +41,14 @@ New-Item -ItemType Directory -Force -Path C:\julia > $null
 # Check if file exists and is current
 # Based on https://stackoverflow.com/a/30129694/392585
 if ( -not (Test-Path $julia_installer) ) {
-    Write-Host "Cache not found, downloading..."
+    Write-Host "Cache not found, downloading Julia..."
     (New-Object System.Net.WebClient).DownloadFile($julia_url, $julia_installer)
     $install = $true
 
 } else {
     try {
         #use HttpWebRequest to download file
-	$webRequest = [System.Net.HttpWebRequest]::Create($uri);
+	$webRequest = [System.Net.HttpWebRequest]::Create($julia_url);
         $webRequest.IfModifiedSince = ([System.IO.FileInfo]$julia_installer).LastWriteTime
 	$webRequest.Method = "GET";
         [System.Net.HttpWebResponse]$webResponse = $webRequest.GetResponse()
@@ -56,7 +56,7 @@ if ( -not (Test-Path $julia_installer) ) {
         #Read HTTP result from the $webResponse
         $stream = New-Object System.IO.StreamReader($webResponse.GetResponseStream())
 	#Save to file
-        Write-Host "Cache out-of-date, downloading..."
+        Write-Host "Cache out-of-date, downloading Julia..."
 	$stream.ReadToEnd() | Set-Content -Path $julia_installer -Force 
         $install = $true
 
@@ -82,7 +82,9 @@ if (Test-Path $julia_path) {
 if ($install) {
     Write-Host "Installing Julia..."
     Start-Process -FilePath $julia_installer -ArgumentList "/S /D=$julia_path" -NoNewWindow -Wait
-}
+} else {
+    Write-Host "Using cached Julia installation."
+}    
 
 # Append to PATH
 $env:PATH += ";$julia_path\bin"
