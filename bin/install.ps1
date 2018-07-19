@@ -32,18 +32,18 @@ if ($env:JULIA_VERSION -eq 'latest') {
 }
 
 $julia_path = "C:\julia"
+$julia_touchfile = "$julia_path\touchfile"
 $julia_installer = "C:\julia-installer.exe"
 
 # Check if file exists and is current
 # Based on https://stackoverflow.com/a/30129694/392585
-if ( -not (Test-Path $julia_path) ) {
+if ( -not (Test-Path $julia_touchfile) ) {
     Write-Host "Cache not found, downloading Julia..."
     (New-Object System.Net.WebClient).DownloadFile($julia_url, $julia_installer)
     $install = $true
-
 } else {
     # get the modification time of the directory
-    $dt = [system.io.directoryinfo]$julia_path.LastWriteTime
+    $dt = [system.io.directoryinfo]$julia_touchfile.LastWriteTime
     Write-Host "last modified: $dt"    
     try {
         #use HttpWebRequest to download file
@@ -72,17 +72,10 @@ if ( -not (Test-Path $julia_path) ) {
     }
 }
 
-if (Test-Path $julia_path) {
-   if ($install) {
-       Remove-Item -Recurse -Force $julia_path
-   }
-} else {
-   $install = $true
-}
-
 if ($install) {
     Write-Host "Installing Julia..."
     Start-Process -FilePath $julia_installer -ArgumentList "/S /D=$julia_path" -NoNewWindow -Wait
+    echo $null >> $julia_touchfile
 } else {
     Write-Host "Using cached Julia installation."
 }    
