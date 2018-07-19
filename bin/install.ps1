@@ -20,7 +20,6 @@ if ($env:PLATFORM -eq "x86") {
 if ($env:JULIA_VERSION -eq 'latest') {
     $julia_version = [Version]"0.7"
     $julia_url = "https://julialangnightlies-s3.julialang.org/bin/winnt/$platform/julia-latest-win$wordsize.exe"
-    $julia_path = "C:\julia\julia-latest-$platform"
 } else {
     if ($env:JULIA_VERSION -eq 'release') {
         $julia_version = [Version]"0.6"
@@ -30,34 +29,36 @@ if ($env:JULIA_VERSION -eq 'latest') {
         throw "Unsupported Julia version $env.JULIA_VERSION"
     }
     $julia_url = "https://julialang-s3.julialang.org/bin/winnt/$platform/$julia_version/julia-$julia_version-latest-win$wordsize.exe"
-    $julia_path = "C:\julia\julia-$julia_version-$platform"
 }
 
-$julia_installer = "$julia_path-installer.exe"
-
-# create directory if it doesn't exist
-New-Item -ItemType Directory -Force -Path C:\julia > $null
+$julia_path = "C:\julia"
+$julia_installer = "C:\julia-installer.exe"
 
 # Check if file exists and is current
 # Based on https://stackoverflow.com/a/30129694/392585
-if ( -not (Test-Path $julia_installer) ) {
+if ( -not (Test-Path $julia_path) ) {
     Write-Host "Cache not found, downloading Julia..."
     (New-Object System.Net.WebClient).DownloadFile($julia_url, $julia_installer)
     $install = $true
 
 } else {
+    # get the modification time of the directory
+    $dt = [system.io.directoryinfo]$julia_path.LastWriteTime
+    Write-Host "last modified: $dt"    
     try {
         #use HttpWebRequest to download file
 	$webRequest = [System.Net.HttpWebRequest]::Create($julia_url);
-        $webRequest.IfModifiedSince = ([System.IO.FileInfo]$julia_installer).LastWriteTime
+        $webRequest.IfModifiedSince = $dt
 	$webRequest.Method = "GET";
         [System.Net.HttpWebResponse]$webResponse = $webRequest.GetResponse()
 
         #Read HTTP result from the $webResponse
         $stream = New-Object System.IO.StreamReader($webResponse.GetResponseStream())
 	#Save to file
-        Write-Host "Cache out-of-date, downloading Julia..."
-	$stream.ReadToEnd() | Set-Content -Path $julia_installer -Force 
+        Write-Host "Cache out-of-date, downloading Julia..."        
+	$stream.ReadToEnd() | Set-Content -Path $julia_installer -Force
+        # remove directory
+        Remove-Item -Recurse -Force $julia_path
         $install = $true
 
     } catch [System.Net.WebException] {
@@ -87,7 +88,10 @@ if ($install) {
 }    
 
 # Append to PATH
+# to be removed in future
 $env:PATH += ";$julia_path\bin"
+
+$env:JULIA_BIN = "$julia_path\bin\julia.exe"
 
 if (($julia_version -ge [Version]"0.7") -and (Test-Path "Project.toml")) {
     $env:JULIA_PROJECT = ".@" # TODO: change this to --project="@."
