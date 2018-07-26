@@ -31,17 +31,60 @@ if ($env:JULIA_VERSION -eq 'latest') {
     $julia_url = "https://julialang-s3.julialang.org/bin/winnt/$platform/$julia_version/julia-$julia_version-latest-win$wordsize.exe"
 }
 
+$julia_path = "C:\julia"
+$julia_touchfile = "$julia_path\touchfile"
+$julia_installer = "C:\julia-installer.exe"
 
-Write-Host "Installing Julia..."
+# Check if file exists and is current
+# Based on https://stackoverflow.com/a/30129694/392585
+if ( -not (Test-Path $julia_touchfile) ) {
+    Write-Host "Cache not found, downloading Julia..."
+    (New-Object System.Net.WebClient).DownloadFile($julia_url, $julia_installer)
+    $install = $true
+} else {
+    # get the modification time of the directory
+    $dt = [system.io.directoryinfo]$julia_touchfile.LastWriteTime
+    Write-Host "last modified: $dt"    
+    try {
+        #use HttpWebRequest to download file
+	$webRequest = [System.Net.HttpWebRequest]::Create($julia_url);
+        $webRequest.IfModifiedSince = $dt
+	$webRequest.Method = "GET";
+        [System.Net.HttpWebResponse]$webResponse = $webRequest.GetResponse()
 
-# Download most Julia Windows binary
-(new-object net.webclient).DownloadFile($julia_url, "C:\projects\julia-binary.exe")
+        #Read HTTP result from the $webResponse
+        $stream = New-Object System.IO.StreamReader($webResponse.GetResponseStream())
+	#Save to file
+        Write-Host "Cache out-of-date, downloading Julia..."        
+	$stream.ReadToEnd() | Set-Content -Path $julia_installer -Force
+        # remove directory
+        Remove-Item -Recurse -Force $julia_path
+        $install = $true
 
-# Install Julia
-Start-Process -FilePath "C:\projects\julia-binary.exe" -ArgumentList "/S /D=C:\projects\julia" -NoNewWindow -Wait
+    } catch [System.Net.WebException] {
+        #Check for a 304
+        if ($_.Exception.Response.StatusCode -eq [System.Net.HttpStatusCode]::NotModified) {
+            Write-Host "Cache current, not downloading."
+            $install = $false
+        } else {
+            throw $_.Exception
+        }
+    }
+}
+
+if ($install) {
+    Write-Host "Installing Julia..."
+    Start-Process -FilePath $julia_installer -ArgumentList "/S /D=$julia_path" -NoNewWindow -Wait
+    echo $null >> $julia_touchfile
+} else {
+    Write-Host "Using cached Julia installation."
+}    
 
 # Append to PATH
-$env:PATH += ";C:\projects\julia\bin"
+# to be removed in future
+$env:PATH += ";$julia_path\bin"
+
+$env:JULIA_BIN = "$julia_path\bin\julia.exe"
 
 if (($julia_version -ge [Version]"0.7") -and (Test-Path "Project.toml")) {
     $env:JULIA_PROJECT = "@." # TODO: change this to --project="@."
