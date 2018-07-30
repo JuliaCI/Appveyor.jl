@@ -42,10 +42,6 @@ Write-Host "Installing Julia..."
 # Install Julia
 Start-Process -FilePath $julia_installer -ArgumentList "/S /D=$julia_path" -NoNewWindow -Wait
 
-# Append to PATH
-# to be removed in future
-$env:PATH += ";$julia_path\bin"
-
 if (($julia_version -ge [Version]"0.7") -and (Test-Path "Project.toml")) {
     $env:JULIA_PROJECT = ".@" # TODO: change this to --project="@."
     $env:JL_BUILD_SCRIPT = "using Pkg; Pkg.build()"
@@ -58,7 +54,7 @@ if (($julia_version -ge [Version]"0.7") -and (Test-Path "Project.toml")) {
 }
 
 if ($julia_version -ge [Version]"0.7") {
-    julia -e 'using InteractiveUtils; versioninfo()'
+    $julia_path/bin/julia -e 'using InteractiveUtils; versioninfo()'
 } else {
-    julia -e 'versioninfo()'
+    $julia_path/bin/julia -e 'versioninfo()'
 }
