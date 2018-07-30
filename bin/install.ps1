@@ -31,17 +31,20 @@ if ($env:JULIA_VERSION -eq 'latest') {
     $julia_url = "https://julialang-s3.julialang.org/bin/winnt/$platform/$julia_version/julia-$julia_version-latest-win$wordsize.exe"
 }
 
+$julia_installer = "C:\projects\julia-installer.exe"
+$julia_path = "C:\julia"
 
 Write-Host "Installing Julia..."
 
 # Download most Julia Windows binary
-(new-object net.webclient).DownloadFile($julia_url, "C:\projects\julia-binary.exe")
+(new-object net.webclient).DownloadFile($julia_url, $julia_installer)
 
 # Install Julia
-Start-Process -FilePath "C:\projects\julia-binary.exe" -ArgumentList "/S /D=C:\projects\julia" -NoNewWindow -Wait
+Start-Process -FilePath $julia_installer -ArgumentList "/S /D=$julia_path" -NoNewWindow -Wait
 
 # Append to PATH
-$env:PATH += ";C:\projects\julia\bin"
+# to be removed in future
+$env:PATH += ";$julia_path\bin"
 
 if (($julia_version -ge [Version]"0.7") -and (Test-Path "Project.toml")) {
     $env:JULIA_PROJECT = ".@" # TODO: change this to --project="@."
