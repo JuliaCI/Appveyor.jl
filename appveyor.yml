@@ -29,7 +29,7 @@ install:
       if (Test-Path env:APPVEYOR_PULL_REQUEST_HEAD_COMMIT) {
           $ref = $env:APPVEYOR_PULL_REQUEST_HEAD_COMMIT
       } else {
-          $ref = "version-1"
+          $ref = $env:APPVEYOR_REPO_BRANCH
       }
       iex ((new-object net.webclient).DownloadString("https://raw.githubusercontent.com/JuliaCI/Appveyor.jl/$ref/bin/install.ps1"))
 
