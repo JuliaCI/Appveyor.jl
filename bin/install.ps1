@@ -54,7 +54,7 @@ if (($julia_version -ge [Version]"0.7") -and (Test-Path "Project.toml")) {
 }
 
 if ($julia_version -ge [Version]"0.7") {
-    $julia_path/bin/julia -e 'using InteractiveUtils; versioninfo()'
+    C:\julia\bin\julia -e 'using InteractiveUtils; versioninfo()'
 } else {
-    $julia_path/bin/julia -e 'versioninfo()'
+    C:\julia\bin\julia -e 'versioninfo()'
 }
