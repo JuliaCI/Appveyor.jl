@@ -46,6 +46,11 @@ build_script:
 test_script:
   - echo "%JL_TEST_SCRIPT%"
   - C:\julia\bin\julia -e "%JL_TEST_SCRIPT%"
+
+# optional: upload coverage data to Codecov
+on_success:
+  - echo "%JL_SUCCESS_SCRIPT%"
+  - C:\julia\bin\julia -e "%JL_SUCCESS_SCRIPT%"
 ```
 
 Adjust `julia_version` numbers as needed.
