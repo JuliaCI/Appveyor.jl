@@ -11,8 +11,8 @@ Replace your `appveyor.yml` file with the following:
 ```
 environment:
   matrix:
-  - julia_version: 0.6
   - julia_version: 0.7
+  - julia_version: 1.0
   - julia_version: latest
 
 platform:
