@@ -42,13 +42,18 @@ Write-Host "Installing Julia..."
 # Install Julia
 Start-Process -FilePath $julia_installer -ArgumentList "/S /D=$julia_path" -NoNewWindow -Wait
 
-if (($julia_version -ge [Version]"0.7") -and (Test-Path "Project.toml")) {
-    $env:JULIA_PROJECT = "@." # TODO: change this to --project="@."
-    $env:JL_BUILD_SCRIPT = "using Pkg; Pkg.build()"
-    $env:JL_TEST_SCRIPT = "using Pkg; Pkg.test(coverage=true)"
+if ($julia_version -ge [Version]"0.7") {
+    if (Test-Path "Project.toml") {
+        $env:JULIA_PROJECT = "@." # TODO: change this to --project="@."
+        $env:JL_BUILD_SCRIPT = "using Pkg; Pkg.build()"
+        $env:JL_TEST_SCRIPT = "using Pkg; Pkg.test(coverage=true)"
+    } else {
+        $projectname = $env:APPVEYOR_PROJECT_NAME -replace '\.jl$',''
+        $env:JL_BUILD_SCRIPT = "using Pkg; Pkg.clone(pwd(), \`"$projectname\`"); Pkg.build(\`"$projectname\`")"
+        $env:JL_TEST_SCRIPT = "using Pkg; Pkg.test(\`"$projectname\`", coverage=true)"
+    }
 } else {
-    # Set projectname
-    $projectname = $env:APPVEYOR_PROJECT_NAME -replace '\.jl$',''
+    $projectname = $env:APPVEYOR_PROJECT_NAME -replace '\.jl$',''    
     $env:JL_BUILD_SCRIPT = "Pkg.clone(pwd(), \`"$projectname\`"); Pkg.build(\`"$projectname\`")"
     $env:JL_TEST_SCRIPT = "Pkg.test(\`"$projectname\`", coverage=true)"
 }
