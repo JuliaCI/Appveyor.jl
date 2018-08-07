@@ -1,3 +1,5 @@
+### DO NOT COPY THIS SCRIPT FOR USE IN OTHER REPOSITORIES ###
+# Copy the one in the README instead.
 environment:
   matrix:
   - julia_version: 0.6
