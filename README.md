@@ -20,11 +20,11 @@ platform:
   - x86 # 32-bit
   - x64 # 64-bit
 
-## uncomment the following lines to allow failures on nightly julia
-## (tests will run but not make your overall status red)
-#matrix:
-#  allow_failures:
-#  - julia_version: latest
+# # Uncomment the following lines to allow failures on nightly julia
+# # (tests will run but not make your overall status red)
+# matrix:
+#   allow_failures:
+#   - julia_version: latest
 
 branches:
   only:
@@ -48,10 +48,11 @@ test_script:
   - echo "%JL_TEST_SCRIPT%"
   - C:\julia\bin\julia -e "%JL_TEST_SCRIPT%"
 
-# optional: upload coverage data to Codecov
-on_success:
-  - echo "%JL_SUCCESS_SCRIPT%"
-  - C:\julia\bin\julia -e "%JL_SUCCESS_SCRIPT%"
+# # Uncomment to support code coverage upload. Should only be enabled for packages
+# # which would have coverage gaps without running on Windows
+# on_success:
+#   - echo "%JL_CODECOV_SCRIPT%"
+#   - C:\julia\bin\julia -e "%JL_CODECOV_SCRIPT%"
 ```
 
 Adjust `julia_version` numbers as needed.
