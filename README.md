@@ -1,6 +1,7 @@
 # Appveyor.jl
 
 [![Build status](https://ci.appveyor.com/api/projects/status/rbca6b6qclxqdhwx/branch/version-1?svg=true)](https://ci.appveyor.com/project/simonbyrne/appveyor-jl)
+[![codecov.io](http://codecov.io/github/JuliaCI/Appveyor.jl/coverage.svg?branch=master)](http://codecov.io/github/JuliaCI/Appveyor.jl?branch=master)
 
 This contains a "universal" Appveyor script for Julia repositories, making it easier to set up matrix builds and keep URLs up-to-date.
 
