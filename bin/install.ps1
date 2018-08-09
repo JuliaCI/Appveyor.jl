@@ -47,15 +47,18 @@ if ($julia_version -ge [Version]"0.7") {
         $env:JULIA_PROJECT = "@." # TODO: change this to --project="@."
         $env:JL_BUILD_SCRIPT = "using Pkg; Pkg.build()"
         $env:JL_TEST_SCRIPT = "using Pkg; Pkg.test(coverage=true)"
+        $env:JL_CODECOV_SCRIPT = "using Pkg; Pkg.add(\`"Coverage\`"); using Coverage; Codecov.submit(process_folder())"
     } else {
         $projectname = $env:APPVEYOR_PROJECT_NAME -replace '\.jl$',''
         $env:JL_BUILD_SCRIPT = "using Pkg; Pkg.clone(pwd(), \`"$projectname\`"); Pkg.build(\`"$projectname\`")"
         $env:JL_TEST_SCRIPT = "using Pkg; Pkg.test(\`"$projectname\`", coverage=true)"
+        $env:JL_CODECOV_SCRIPT = "using Pkg; cd(Pkg.dir(\`"$projectname\`")); Pkg.add(\`"Coverage\`"); using Coverage; Codecov.submit(process_folder())"
     }
 } else {
     $projectname = $env:APPVEYOR_PROJECT_NAME -replace '\.jl$',''    
     $env:JL_BUILD_SCRIPT = "Pkg.clone(pwd(), \`"$projectname\`"); Pkg.build(\`"$projectname\`")"
     $env:JL_TEST_SCRIPT = "Pkg.test(\`"$projectname\`", coverage=true)"
+    $env:JL_CODECOV_SCRIPT = "cd(Pkg.dir(\`"$projectname\`")); Pkg.add(\`"Coverage\`"); using Coverage; Codecov.submit(process_folder())"
 }
 
 if ($julia_version -ge [Version]"0.7") {
