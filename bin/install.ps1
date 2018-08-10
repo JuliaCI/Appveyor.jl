@@ -17,12 +17,18 @@ if ($env:PLATFORM -eq "x86") {
     throw "No platform specified"
 }
 
-if ($env:JULIA_VERSION -eq 'latest') {
+if ($env:JULIA_VERSION -in 'latest', 'nightly') {
+    # TODO: move to nightly to be consistent with Travis and download page
     $julia_version = [Version]"0.7"
     $julia_url = "https://julialangnightlies-s3.julialang.org/bin/winnt/$platform/julia-latest-win$wordsize.exe"
+} elseif ($env:JULIA_VERSION -match "(\d*\.\d*)\.\d*") {
+    $julia_version = [Version]$matches[1]
+    $julia_url = "https://julialang-s3.julialang.org/bin/winnt/$platform/$julia_version/julia-$env:JULIA_VERSION-win$wordsize.exe"    
 } else {
     if ($env:JULIA_VERSION -eq 'release') {
-        $julia_version = [Version]"0.6"
+        Write-Error "'release' is no longer a supported version, use '1' instead."
+    } elseif ($env:JULIA_VERSION -eq '1') {
+        $julia_version = [Version]"1.0"
     } elseif ($env:JULIA_VERSION -match "\d*\.\d*") {
         $julia_version = [Version]$env:JULIA_VERSION
     } else {

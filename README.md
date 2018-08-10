@@ -13,8 +13,8 @@ Replace your `appveyor.yml` file with the following:
 environment:
   matrix:
   - julia_version: 0.7
-  - julia_version: 1.0
-  - julia_version: latest
+  - julia_version: 1
+  - julia_version: nightly
 
 platform:
   - x86 # 32-bit
@@ -55,4 +55,8 @@ test_script:
 #   - C:\julia\bin\julia -e "%JL_CODECOV_SCRIPT%"
 ```
 
-Adjust `julia_version` numbers as needed.
+Adjust `julia_version` numbers as needed. Accepted are:
+ - `nightly`: for latest [nightly build](https://julialang.org/downloads/nightlies.html).
+ - `1`: for latest version 1 major release
+ - x.y: for latest x.y minor release
+ - x.y.z: for exact x.y.z release
