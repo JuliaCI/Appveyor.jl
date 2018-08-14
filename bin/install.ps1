@@ -48,7 +48,7 @@ Write-Host "Installing Julia..."
 # Install Julia
 Start-Process -FilePath $julia_installer -ArgumentList "/S /D=$julia_path" -NoNewWindow -Wait
 
-if ($env:APPVEYOR_REPO_NAME -match /(\w+?)\/(\w+?)(?:\.jl)?$/) {
+if ($env:APPVEYOR_REPO_NAME -match "(\w+?)\/(\w+?)(?:\.jl)?$") {
     $projectname = $matches[2]
 }
 
