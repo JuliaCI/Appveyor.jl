@@ -1,3 +1,5 @@
+Write-Error "Your Appveyor install script is out-of-date: please update the URL to the latest version. See https://github.com/JuliaCI/Appveyor.jl for more details."
+
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12
 
 # If there's a newer build queued for the same PR, cancel this one
