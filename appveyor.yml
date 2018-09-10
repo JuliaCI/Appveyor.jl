@@ -6,6 +6,8 @@ environment:
   - julia_version: 0.7.0
   - julia_version: 1
   - julia_version: nightly
+  coveralls: true
+  codecov: true
 
 platform:
   - x86
@@ -45,5 +47,5 @@ test_script:
   - C:\julia\bin\julia -e "%JL_TEST_SCRIPT%"
 
 on_success:
-  - echo "%JL_CODECOV_SCRIPT%"
-  - C:\julia\bin\julia -e "%JL_CODECOV_SCRIPT%"
+  - echo "%JL_SUCCESS_SCRIPT%"
+  - C:\julia\bin\julia -e "%JL_SUCCESS_SCRIPT%"
