@@ -6,8 +6,9 @@ environment:
   - julia_version: 0.7.0
   - julia_version: 1
   - julia_version: nightly
-#  coveralls: true
   codecov: true
+  coveralls_repo_token:
+    secure: Qkud4b8Xxxi2QEM+hvq0xTOkk7kJG7ND2MDjdY/btOouq6jauYA9kCz60VHDtWRA
 
 platform:
   - x86

@@ -59,7 +59,7 @@ $coverage = ""
 if (Test-Path env:CODECOV) {
    $coverage += "Codecov.submit(process_folder());"
 }
-if (Test-Path env:COVERALLS) {
+if (Test-Path env:COVERALLS_REPO_TOKEN) {
    $coverage += "Coveralls.submit(process_folder());"
 }
 
