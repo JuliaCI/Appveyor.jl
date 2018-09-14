@@ -56,10 +56,10 @@ if ($env:APPVEYOR_REPO_NAME -match "(\w+?)\/(\w+?)(?:\.jl)?$") {
 # Coverage
 
 $coverage = ""
-if (Test-Path env:CODECOV) {
+if (Test-Path env:CODECOV -or Test-Path env:CODECOV_TOKEN) {
    $coverage += "Codecov.submit(process_folder());"
 }
-if (Test-Path env:COVERALLS_REPO_TOKEN) {
+if (Test-Path env:COVERALLS_TOKEN) {
    $coverage += "Coveralls.submit(process_folder());"
 }
 
