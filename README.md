@@ -7,7 +7,7 @@ This contains a "universal" Appveyor script for Julia repositories, making it ea
 
 # Usage
 
-Replace your `appveyor.yml` file with the following:
+Replace your `.appveyor.yml`/`appveyor.yml` file with the following:
 
 ```
 environment:
