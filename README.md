@@ -9,7 +9,7 @@ This contains a "universal" Appveyor script for Julia repositories, making it ea
 
 Replace your `.appveyor.yml`/`appveyor.yml` file with the following:
 
-```
+```yaml
 environment:
   matrix:
   - julia_version: 0.7
