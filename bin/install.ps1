@@ -47,9 +47,9 @@ Write-Host "Installing Julia..."
 
 # Install Julia
 if ($julia_version -ge [Version]"1.3") {
-    Start-Process -FilePath $julia_installer -ArgumentList "/S /D=$julia_path" -NoNewWindow -Wait
-} else {
     Start-Process -FilePath $julia_installer -ArgumentList "/VERYSILENT /DIR=$julia_path" -NoNewWindow -Wait
+} else {
+    Start-Process -FilePath $julia_installer -ArgumentList "/S /D=$julia_path" -NoNewWindow -Wait
 }
 
 Start-Process -FilePath $julia_installer -ArgumentList "/S /D=$julia_path" -NoNewWindow -Wait
