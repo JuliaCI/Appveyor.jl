@@ -19,7 +19,7 @@ if ($env:PLATFORM -eq "x86") {
 
 if ($env:JULIA_VERSION -in 'latest', 'nightly') {
     # TODO: move to nightly to be consistent with Travis and download page
-    $julia_version = [Version]"0.7"
+    $julia_version = [Version]"1.4"
     $julia_url = "https://julialangnightlies-s3.julialang.org/bin/winnt/$platform/julia-latest-win$wordsize.exe"
 } elseif ($env:JULIA_VERSION -match "(\d*\.\d*)\.\d*") {
     $julia_version = [Version]$matches[1]
