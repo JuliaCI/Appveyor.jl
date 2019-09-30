@@ -19,7 +19,7 @@ if ($env:PLATFORM -eq "x86") {
 
 if ($env:JULIA_VERSION -in 'latest', 'nightly') {
     # TODO: move to nightly to be consistent with Travis and download page
-    $julia_version = [Version]"0.7"
+    $julia_version = [Version]"1.4"
     $julia_url = "https://julialangnightlies-s3.julialang.org/bin/winnt/$platform/julia-latest-win$wordsize.exe"
 } elseif ($env:JULIA_VERSION -match "(\d*\.\d*)\.\d*") {
     $julia_version = [Version]$matches[1]
@@ -46,7 +46,11 @@ Write-Host "Installing Julia..."
 (new-object net.webclient).DownloadFile($julia_url, $julia_installer)
 
 # Install Julia
-Start-Process -FilePath $julia_installer -ArgumentList "/S /D=$julia_path" -NoNewWindow -Wait
+if ($julia_version -ge [Version]"1.4") {
+    Start-Process -FilePath $julia_installer -ArgumentList "/VERYSILENT /DIR=$julia_path" -NoNewWindow -Wait
+} else {
+    Start-Process -FilePath $julia_installer -ArgumentList "/S /D=$julia_path" -NoNewWindow -Wait
+}
 
 if ($env:APPVEYOR_REPO_NAME -match "(\w+?)\/(\w+?)(?:\.jl)?$") {
     $projectname = $matches[2]
