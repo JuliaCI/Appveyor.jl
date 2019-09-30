@@ -52,8 +52,6 @@ if ($julia_version -ge [Version]"1.3") {
     Start-Process -FilePath $julia_installer -ArgumentList "/S /D=$julia_path" -NoNewWindow -Wait
 }
 
-Start-Process -FilePath $julia_installer -ArgumentList "/S /D=$julia_path" -NoNewWindow -Wait
-
 if ($env:APPVEYOR_REPO_NAME -match "(\w+?)\/(\w+?)(?:\.jl)?$") {
     $projectname = $matches[2]
 }
