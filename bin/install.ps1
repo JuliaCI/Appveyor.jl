@@ -28,7 +28,7 @@ if ($env:JULIA_VERSION -in 'latest', 'nightly') {
     if ($env:JULIA_VERSION -eq 'release') {
         Write-Error "'release' is no longer a supported version, use '1' instead."
     } elseif ($env:JULIA_VERSION -eq '1') {
-        $julia_version = [Version]"1.1"
+        $julia_version = [Version]"1.3"
     } elseif ($env:JULIA_VERSION -match "\d*\.\d*") {
         $julia_version = [Version]$env:JULIA_VERSION
     } else {
