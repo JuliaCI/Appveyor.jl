@@ -57,7 +57,7 @@ if ($env:APPVEYOR_REPO_NAME -match "(\w+?)\/(\w+?)(?:\.jl)?$") {
 }
 
 if ($julia_version -ge [Version]"0.7") {
-    if (Test-Path "Project.toml") {
+    if ((Test-Path "Project.toml") -or (Test-Path "JuliaProject.toml")) {
         $env:JULIA_PROJECT = "@." # TODO: change this to --project="@."
         $env:JL_BUILD_SCRIPT = "using Pkg; Pkg.build()"
         $env:JL_TEST_SCRIPT = "using Pkg; Pkg.test(coverage=true)"
