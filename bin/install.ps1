@@ -56,20 +56,46 @@ if ($env:APPVEYOR_REPO_NAME -match "(\w+?)\/(\w+?)(?:\.jl)?$") {
     $projectname = $matches[2]
 }
 
+
+# Coverage
+
+$coverage = ""
+if (Test-Path env:CODECOV -or Test-Path env:CODECOV_TOKEN) {
+   $coverage += "Codecov.submit(process_folder());"
+}
+if (Test-Path env:COVERALLS_TOKEN) {
+   $coverage += "Coveralls.submit(process_folder());"
+}
+
 if ($julia_version -ge [Version]"0.7") {
     if ((Test-Path "Project.toml") -or (Test-Path "JuliaProject.toml")) {
         $env:JULIA_PROJECT = "@." # TODO: change this to --project="@."
         $env:JL_BUILD_SCRIPT = "using Pkg; Pkg.build()"
         $env:JL_TEST_SCRIPT = "using Pkg; Pkg.test(coverage=true)"
+        $env:JL_SUCCESS_SCRIPT = "using Pkg;"
+        if ($coverage -ne "") {
+            $env:JL_SUCCESS_SCRIPT += "Pkg.add(\`"Coverage\`"); using Coverage; $coverage"
+        }
+        # to be removed in next iteration
         $env:JL_CODECOV_SCRIPT = "using Pkg; Pkg.add(\`"Coverage\`"); using Coverage; Codecov.submit(process_folder())"
     } else {
         $env:JL_BUILD_SCRIPT = "using Pkg; Pkg.clone(pwd(), \`"$projectname\`"); Pkg.build(\`"$projectname\`")"
         $env:JL_TEST_SCRIPT = "using Pkg; Pkg.test(\`"$projectname\`", coverage=true)"
+        $env:JL_SUCCESS_SCRIPT = "using Pkg;"
+        if ($coverage -ne "") {
+            $env:JL_SUCCESS_SCRIPT += "cd(Pkg.dir(\`"$projectname\`")); Pkg.add(\`"Coverage\`"); using Coverage; $coverage"
+        }
+        # to be removed in next iteration
         $env:JL_CODECOV_SCRIPT = "using Pkg; cd(Pkg.dir(\`"$projectname\`")); Pkg.add(\`"Coverage\`"); using Coverage; Codecov.submit(process_folder())"
     }
 } else {
     $env:JL_BUILD_SCRIPT = "Pkg.clone(pwd(), \`"$projectname\`"); Pkg.build(\`"$projectname\`")"
     $env:JL_TEST_SCRIPT = "Pkg.test(\`"$projectname\`", coverage=true)"
+    $env:JL_SUCCESS_SCRIPT = ""
+    if ($coverage -ne "") {
+        $env:JL_SUCCESS_SCRIPT += "cd(Pkg.dir(\`"$projectname\`")); Pkg.add(\`"Coverage\`"); using Coverage; $coverage"
+    }
+    # to be removed in next iteration
     $env:JL_CODECOV_SCRIPT = "cd(Pkg.dir(\`"$projectname\`")); Pkg.add(\`"Coverage\`"); using Coverage; Codecov.submit(process_folder())"
 }
 
